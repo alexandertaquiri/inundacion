@@ -23,8 +23,8 @@ class ProductionConfig(Config):
     DB_USER = environ.get("DB_USER", "grupo9")
     DB_PASS = environ.get("DB_PASS", "YTk0Y2E2YTA0NDM5")
     DB_NAME = environ.get("DB_NAME", "grupo9")
-    GOOGLE_CLIENT_ID="131272049540-8mpptmi78lufn0kaapoca4iv5rmiu53c.apps.googleusercontent.com"
-    GOOGLE_CLIENT_SECRET="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"
+    GOOGLE_CLIENT_ID=""
+    GOOGLE_CLIENT_SECRET=""
     OAUTHLIB_INSECURE_TRANSPORT = "1"    
     SQLALCHEMY_DATABASE_URI = (
             f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:3306/{DB_NAME}"
