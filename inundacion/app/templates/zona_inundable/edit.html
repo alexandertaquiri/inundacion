@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+
+    #map {
+        min-height: 400px;
+        min-width: 200px;
+    }
+
+    #coordenadas {
+        display: none;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+        
+    <div class="container espaciador-div-top">
+        <form action="{{ url_for('zona_modificar_confirm') }}" method="POST" id="create-form">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i style="margin-right: 10px;" class="glyphicon glyphicon-search"></i>{{ title }}</h4>
+                </div>
+    
+                <div class="panel-body">
+                    <div class="row form-group" style="margin-top: 40px;">
+                        <div class="col-12 col-md-6">
+                            <label for="nombre"><small>Nombre</small></label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ diccio['nombre'] }}">
+                        </div>
+
+                        <div class="col-12 col-md-12">
+                            {% if errores is defined and errores["nombre_vacio"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["nombre_vacio"] }}
+                            </div>
+                            {% endif %}
+
+                            {% if errores is defined and errores["nombre_ok"] is defined %}
+                            <div class="alert alert-success" role="alert">
+                                {{ errores["nombre_ok"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="codigo"><small>Codigo</small></label>
+                            <input class="form-control" id="codigo" name="codigo" value="{{ diccio['codigo'] }}">
+                        </div>
+                    </div>
+
+                    {% if errores is defined and errores["codigo_vacio"] is defined %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ errores["codigo_vacio"] }}
+                    </div>
+                    {% endif %}
+
+                    {% if errores is defined and errores["codigo_repetido"] is defined %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ errores["codigo_repetido"] }}
+                    </div>
+                    {% endif %}
+
+                    {% if errores is defined and errores["codigo_ok"] is defined %}
+                    <div class="alert alert-success" role="alert">
+                        {{ errores["codigo_ok"] }}
+                    </div>
+                    {% endif %}
+
+                    <div class="row form-group" style="margin-top: 40px;">
+                        <div class="col-12 col-md-6">
+                            <label for="descripcion"><small>Descripcion</small></label>
+                            <!-- <input class="form-control" id="descripcion" name="descripcion" value="{{ diccio['descripcion'] }}"> -->
+                            <textarea class="form-control" name="descripcion" id="descripcion" cols="30" rows="5" value="{{ diccio['descripcion'] }}">{{ diccio['descripcion'] }}</textarea>
+                            {% if errores is defined and errores["descripcion_ok"] is defined %}
+                            <div class="alert alert-success" role="alert">
+                                {{ errores["descripcion_ok"] }}
+                            </div>
+                            {% endif %}
+
+                            {% if errores is defined and errores["descripcion_vacio"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["descripcion_vacio"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="longitud"><small>Color de zona</small></label>
+                            <input type="color" class="form-control" name="color" placeholder="Color de zona" value="{{ diccio['color'] }}">
+
+                            {% if errores is defined and errores["color_ok"] is defined %}
+                            <div class="alert alert-success" role="alert">
+                                {{ errores["color_ok"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    <div class="row form-group" style="margin-top: 40px;">
+                        <div class="col-12 col-md-6">
+                            <label for="estado"><small>Publicado</small></label>
+                            <select class="form-control" id="estado" name="estado">
+                                {% if diccio['estado'] == 1 %}
+                                    <option selected="true" value="1">SI</option>
+                                    <option value="0">NO</option>
+                                {% else: %}                             
+                                    <option selected="true" value="0">NO</option>
+                                    <option value="1">SI</option>
+                                {% endif %}
+                            </select>    
+
+                            {% if errores is defined and errores["estado_ok"] is defined %}
+                            <div class="alert alert-success" role="alert">
+                                {{ errores["estado_ok"] }}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="coordenadas"><small>Coordenadas</small></label>
+                            <input disabled class="form-control alert alert-danger" id="coord" name="coord" value="Las coordenadas solo pueden editarse desde la importación">
+                        </div>
+                    </div>
+
+                    {% if errores is defined and errores["sin_cambios"] is defined %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ errores["sin_cambios"] }}
+                    </div>
+                    {% endif %}
+
+
+                    <!-- <div class="row form-group">
+                        <div class="col-12 col-md-7">
+                            {% if errores is defined and errores["error_coordenadas"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_coordenadas"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div> -->
+                </div>
+                <input type="hidden" id="idModificar" name="idModificar" value="{{ diccio['id'] }}">
+                <button type="submit" class="btn btn-primary">Modificar</button>
+                <a type="button" class="btn btn-default" href="{{ url_for('zona_index') }}" style="border: 1px solid #138496; margin-right: 10px;">Volver</a>
+            </div>
+        </form>
+
+        <div class="panel-footer text-right" style="margin-top: 20px;">
+            <a type="button" class="btn btn-danger" href="{{ url_for('zona_index') }}" style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+        </div>
+
+    </div>
+
+
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+
+{% endblock %}

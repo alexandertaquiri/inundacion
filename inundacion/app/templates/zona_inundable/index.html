@@ -1,0 +1,292 @@
+{% extends "layout.html" %}
+{% block head %}
+
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+    #tabla {
+        background: white;
+        width: 100%;
+        padding: 20px 20px;
+        border-radius: 5px;
+        z-index: -1;
+    }
+    .elemento {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: black;
+    }
+    .titulo {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .form-group {
+        margin: 0px 0px;
+        padding: 0px 0px;
+    }
+    .dropdown-scrollbar {
+        height: 100px;
+        overflow: scroll;
+    }
+
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+    
+</style>
+
+
+    <div class="container">
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+                    <h2 style="color: white;">Zonas inundables</h2>
+                </div>
+            </div>
+        </div>
+    
+        {% if user.tiene_permiso("zona_inundable_create") %}
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <a type="button" href="{{ url_for('zona_new') }}" class="btn btn-success btn-lg"
+                    style="margin-bottom: 40px; border: 1px solid #ccc;"><i style="margin-right: 10px;"
+                        class="glyphicon glyphicon-globe"></i>Agregar</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    
+    <div class="container" id="tabla">
+        <div class="row form-group" style="margin-bottom: 40px; margin-top: 20px;">
+            <form action="{{ url_for('zona_byNombre') }}">
+                <div class="col-12 col-md-4">
+                    <input type="text" id="byNombre" name="byNombre" class="form-control"
+                        placeholder="Filtrar por nombre de zona...">
+                </div>
+    
+                <div class="col-12 col-md-1">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+    
+            <div class="col-12 col-md-2">
+    
+            </div>
+    
+            <form action="{{ url_for('zona_estado') }}" method="POST">
+                <div class="col-12 col-md-4">
+                    <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+                        <option selected>Todos</option>
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+    
+                <div class="col-12 col-md-1">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    
+    
+        <div class="col-12 col-md-12">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Nombre de zona</strong>
+                            </a>
+                        </th>
+                        <!-- <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Descripcion</strong>
+                            </a>
+                        </th> -->
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Codigo</strong>
+                            </a>
+                        </th>
+                        <!-- <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Email</strong>
+                            </a>
+                        </th> -->
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Estado</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Acciones</strong>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for zona in zonas.items %}
+                    <tr>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ zona.nombre }}
+                            </a>
+                        </td>
+                        <!-- <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ zona.descripcion }}
+                            </a>
+                        </td> -->
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ zona.codigo }}
+                            </a>
+                        </td>
+                        <!-- <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ user.email }}
+                            </a>
+                        </td> -->
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {% if zona.estado == 1 %}
+                                Activo
+                                {% else %}
+                                Inactivo
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td>
+                            {% if user.tiene_permiso("zona_inundable_show") %}
+                                <a class="btn" onclick="visualizar('{{ zona.id }}');"><i class="glyphicon glyphicon-search"></i></a>
+
+                                {% if user.tiene_permiso("zona_inundable_update") %}    
+                                    <a type="button" class="btn btn-warning" href="{{ url_for('zona_modificar',  id=zona.id) }}"><i class="glyphicon glyphicon-pencil"></i></a>
+                                {% endif %}
+
+                                {% if user.tiene_permiso("zona_inundable_destroy") %}    
+                                    <a class="btn btn-danger" onclick="borrar('{{ zona.id }}');" data-toggle="modal"
+                                        data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>                                
+                                {% endif %}
+
+                            {% endif %}
+                        </td>
+                    </tr> 
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <div style="text-align: right; margin-bottom: 20px;">
+                {% for page_num in zonas.iter_pages(left_edge=1, right_edge=1,
+                left_current=1, right_current=1) %} {% if page_num %} {% if zonas.page ==
+                page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('zona_index', page=page_num) }}">{{ page_num }}</a>
+                {% if page_num != zonas.pages %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('zona_index', page=page_num+1) }}">{{ page_num+1 }}</a>
+                {% endif %}
+                {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('zona_index', page=page_num) }}">{{ page_num }}</a>
+                {% endif %} {% else %} ... {% endif %} {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Envío de id para la modificación -->
+    <form id="envioVisualizar" action="{{ url_for('zona_visualizar') }}">
+        <input id="id_vizualizar" name="id_vizualizar" type="hidden" value="">
+    </form>
+    
+   
+    <!-- Modal para eliminación -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <form action="{{ url_for('zona_delete') }}" method="POST">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                            confirmación
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="cuerpoModal">
+    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                        <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+    
+    <script>
+
+        //para el borrado de la zona
+        function borrar(id) {
+            $("#idBorrar").val(id);
+            $('#cuerpoModal').empty();
+            $('#cuerpoModal').append("¿Desea eliminar la zona seleccionada?");
+        }
+
+        function visualizar(id) {
+            $("#id_vizualizar").val(id);
+            $("#envioVisualizar").submit();
+        }
+
+        $(document).ready(function () {
+            $("#envioVisualizar").hide();
+        });
+
+
+    </script>
+
+
+
+
+    <!-- <script>
+        function editar(id) {
+            $("#id").val(id);
+            $("#envioModificar").submit();
+        }
+
+        function borrar(id) {
+            $("#idBorrar").val(id);
+            $('#cuerpoModal').empty();
+            $('#cuerpoModal').append("¿Desea eliminar el usuario seleccionado?");
+        }
+    </script>
+    
+    <script>
+        $(document).ready(function () {
+            $("#envioModificar").hide();
+        });
+    </script>
+      -->
+
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends "layout.html" %}
+{% block head %}
+
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    
+     
+    <style>
+        #tabla {
+            background: white;
+            width: 100%;
+            padding: 20px 20px;
+            border-radius: 5px;
+        }
+        .elemento {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: black;
+        }
+        .titulo {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin: 0px 0px;
+            padding: 0px 0px;
+        }
+        
+        body {
+            background: {{ datosConfig['coloresPrivados'][0] }};
+        }
+
+        #navColorHeader {
+            background: {{ datosConfig['coloresPrivados'][1] }};
+        }
+
+        #navColorFooter {
+            background: {{ datosConfig['coloresPrivados'][2] }};
+        }
+        
+    </style>
+
+
+    <div class="container">
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+                    <h2 style="color: white;">PUNTOS&nbsp;&nbsp;DE&nbsp;&nbsp;ENCUENTRO</h2>
+                </div>
+            </div>
+        </div>
+
+        {% if user.tiene_permiso("punto_encuentro_new") %}
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <a type="button" href="{{ url_for('puntosEncuentro_new') }}" class="btn btn-success btn-lg" style="margin-bottom: 40px; border: 1px solid #ccc;"><i class="fas fa-location-arrow" style="margin-right: 10px;"></i>Agregar</a>
+            </div>
+        </div> 
+        {% endif %}
+    </div>
+       
+
+    <div class="container" id="tabla">
+        <div class="row form-group" style="margin-bottom: 40px; margin-top: 20px;">
+            <form action="{{ url_for('puntosEncuentro_byNombre') }}">
+                <div class="col-12 col-md-4">
+                    <input type="text" id="byNombre" name="byNombre" class="form-control" placeholder="Filtrar por nombre...">
+                </div>
+    
+                <div class="col-12 col-md-1">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+            
+            <div class="col-12 col-md-2">
+                
+            </div>
+      
+            <form action="{{ url_for('puntosEncuentro_estado') }}" method="POST">
+                <div class="col-12 col-md-4">
+                    <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+                        <option selected>Todos</option>
+                        <option value="Publicado">Publicado</option>
+                        <option value="Despublicado">Despublicado</option>
+                    </select>
+                </div>
+                
+                <div class="col-12 col-md-1">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div> 
+        
+
+        <div class="col-12 col-md-12">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Nombre</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Dirección</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Estado</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Teléfono</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Email</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Acciones</strong>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for punto in puntosEncuentro.items %}
+                    <tr>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ punto.nombre }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ punto.direccion }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ punto.estado }}
+                            </a>
+                        </td>
+                        
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ punto.telefono }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ punto.email }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if user.tiene_permiso("punto_encuentro_update") %}
+                            <a class="btn btn-warning" onclick="editar('{{ punto.id }}');"><i class="far fa-edit"></i></a>
+                            {% endif %}
+        
+                            {% if user.tiene_permiso("punto_encuentro_destroy") %}
+                            <a class="btn btn-danger" onclick="borrar('{{ punto.id }}');" data-toggle="modal" data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-bottom: 20px;">
+                {% for page_num in puntosEncuentro.iter_pages(left_edge=1, right_edge=1,
+                left_current=1, right_current=1) %} {% if page_num %} {% if puntosEncuentro.page ==
+                page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('puntosEncuentro_list', page=page_num) }}">{{ page_num }}</a>
+                {% if page_num != puntosEncuentro.pages %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('puntosEncuentro_list', page=page_num+1) }}">{{ page_num+1 }}</a>
+                {% endif %}
+                {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('puntosEncuentro_list', page=page_num) }}">{{ page_num }}</a>
+                {% endif %} {% else %} ... {% endif %} {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Modal para detalle -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                        
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="far fa-file-alt" style="font-size: 20px; margin-right: 10px;"></i>
+                        Punto de encuentro en detalle
+                    </h4>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="row form-group" style="margin-top: 20px;">
+                            <div class="col-12 col-md-6">
+                                <label for="nombre"><small>Nombre</small></label>
+                                <input type="text" class="form-control" id="nombre" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="estado"><small>Estado</small></label>
+                                <input type="text" class="form-control" id="estado" value="" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top">
+                            <div class="col-12 col-md-6">
+                                <label for="direccion"><small>Dirección</small></label>
+                                <input type="text" class="form-control" id="direccion" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="telefono"><small>Teléfono</small></label>
+                                <input type="text" class="form-control" id="telefono" value="" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top">
+                            <div class="col-12 col-md-6">
+                                <label for="latitud"><small>Latitud</small></label>
+                                <input type="text" class="form-control" id="latitud" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="longitud"><small>Longitud</small></label>
+                                <input type="text" class="form-control" id="longitud" value="" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top" style="margin-bottom: 30px;">
+                            <div class="col-12 col-md-12">
+                                <label for="email"><small>Email</small></label>
+                                <input type="text" class="form-control" id="email" value="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Envío de id para la modificación -->
+    <form id="envioModificar" action="{{ url_for('puntosEncuentro_viewModify') }}" method="POST">
+        <input id="idModificar" name="idModificar" type="hidden" value="">
+    </form>
+
+
+    <!-- Modal para eliminación -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form action="{{ url_for('puntosEncuentro_delete') }}" method="POST">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                            confirmación
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="cuerpoModal">
+    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                        <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+   
+
+    <script>
+        function editar(id) {
+            $("#idModificar").val(id);
+            $("#envioModificar").submit();
+        }
+
+        function borrar(id) {
+            $("#idBorrar").val(id);
+            $('#cuerpoModal').empty();
+            $('#cuerpoModal').append("¿Desea eliminar el punto de encuentro seleccionado?");
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#envioModificar").hide();
+        });
+    </script>
+
+    
+
+{% endblock %}

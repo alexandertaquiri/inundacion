@@ -1,0 +1,357 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    #botonCheck:active {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:hover {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:active ::after {
+        background: #5cb85c;
+        color: white;
+    }
+    .btn-default.active {
+        background-color: #5cb85c;
+        color: white;
+    }
+    .dropdown-scrollbar {
+        height: 100px;
+        overflow: scroll;
+    }
+    
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }    
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+  <style>
+      body {
+          background: {{ datosConfig['coloresPrivados'][0] }};
+      }
+
+      #navColorHeader {
+          background: {{ datosConfig['coloresPrivados'][1] }};
+      }
+
+      #navColorFooter {
+          background: {{ datosConfig['coloresPrivados'][2] }};
+      }  
+  </style>
+
+    <div class="container espaciador-div-top">
+      <form action="{{ url_for('user_modificar_confirm') }}" method="POST">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            {% if usr.id != users.id %}
+            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;">
+              <i class="fas fa-pencil-alt" style="font-size: 20px; margin-right: 10px;"></i>
+              Edición de usuario
+            </h4>
+            {% else %}
+              <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;">
+                <i class="fas fa-user-tag" style="font-size: 20px; margin-right: 10px;"></i>
+                Detalle de usuario
+              </h4>
+            {% endif %}
+          </div>
+    
+          <div class="panel-body">
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-12">
+                {% if users.activo == 1 %}
+                  <div class="alert alert-success" role="alert">
+                    Usuario activo
+                  </div>
+                {% else %}
+                  <div class="alert alert-danger" role="alert">
+                    Usuario Inactivo
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                {% if usr.id != users.id %}
+                <label for="first_name" class="is-required"><small>Nombre</small></label>
+                <input type="text" required class="form-control" id="first_name" name="first_name" placeholder=""
+                  value="{{ users.first_name if users }}">
+                {% else %}
+                  <label for="first_name"><small>Nombre</small></label>
+                  <input type="text" readonly class="form-control" id="first_name" name="first_name" placeholder=""
+                    value="{{ users.first_name if users }}">
+                {% endif %}
+              </div>
+    
+              <div class="col-12 col-md-4">
+                {% if usr.id != users.id %}
+                  <label for="last_name" class="is-required"><small>Apellido</small></label>
+                  <input type="text" required class="form-control" id="last_name" name="last_name" placeholder=""
+                    value="{{ users.last_name if users }}">
+                {% else %}
+                  <label for="last_name"><small>Apellido</small></label>
+                  <input type="text" readonly class="form-control" id="last_name" name="last_name" placeholder=""
+                    value="{{ users.last_name if users }}">
+                {% endif %}
+              </div>
+
+              {% if usr.id != users.id %}
+              <div class="col-12 col-md-4">
+                <label for="last_name"><small>Acción</small></label>
+                <div> 
+                  {% if users.activo == 0: %}
+                    <a class="btn btn-info" onclick="activarDesactivar('{{users.email}}', 'Activar');" data-toggle="modal" data-target="#exampleModal"> <span alt="Activar usuario" title="Activar usuario" class="fas fa-user-edit"></span> Activar</a>
+                  {% else: %}
+                    <a class="btn btn-danger" onclick="activarDesactivar('{{users.email}}', 'Desactivar');" data-toggle="modal" data-target="#exampleModal"> <span alt="Desactivar usuario" title="Desactivar usuario" class="fas fa-user-edit"></span> Desactivar</a>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="row form-group">
+              <div class="col-12 col-md-8">
+                {% if errores is defined and errores["error_nombreCompleto"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_nombreCompleto"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                {% if usr.id != users.id %}
+                  <label for="username" class="is-required"><small>Nombre de usuario</small></label>
+                  <input required type="text" class="form-control" id="username" name="username" placeholder=""
+                    value="{{ users.username if users }}">
+                {% else %}
+                  <label for="username"><small>Nombre de usuario</small></label>
+                  <input readonly type="text" class="form-control" id="username" name="username" placeholder=""
+                    value="{{ users.username if users }}">
+                {% endif %}
+              </div>
+              
+
+              <div class="col-12 col-md-6">
+                {% if usr.id == users.id %}
+                  <label for="email"><small>Email</small></label>
+                  <input readonly type="email" class="form-control" id="email" name="email" placeholder="" value="{{ users.email if users }}">
+                {% else %}
+                  <label for="email" class="is-required"><small>Email</small></label>
+                  <input required type="email" class="form-control" id="email" name="email" placeholder="" value="{{ users.email if users }}">
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-6">
+                {% if errores is defined and errores["error_username"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_username"] }}
+                </div>
+                {% endif %}
+              </div>
+    
+              <div class="col-12 col-md-6">
+                {% if errores is defined and errores["error_email"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_email"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                {% if usr.id == users.id %}
+                  <label for="password"><small>Contraseña</small></label>
+                  <input readonly type="password" class="form-control" id="password" name="password" placeholder="" value="{{ users.password if users }}">
+                {% else %}
+                  <label for="password" class="is-required"><small>Contraseña</small></label>
+                  <input mdInput required type="password" class="form-control" id="password" name="password" placeholder=""
+                    [formControl]="formGroup.controls['password']" autocomplete="new-password" #password
+                    value="{{ users.password if users }}">
+                {% endif %}
+              </div>
+    
+              <div class="col-12 col-md-4">
+                
+                {% if usr.id == users.id %}
+                  <label for="confirmacionPassword"><small>Confirmación de contraseña</small></label>
+                  <input readonly type="password" class="form-control" id="confirmarPassword" name="confirmarPassword" placeholder="" value="{{ users.password if users }}">
+                {% else %}
+                  <label for="confirmacionPassword" class="is-required"><small>Confirmación de contraseña</small></label>
+                  <input required type="password" class="form-control" id="confirmacionPassword" name="confirmacionPassword"
+                    placeholder="" value="{{ confirmacionPassword }}">
+                {% endif %}
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="lista"><small>Detalle</small></label>  
+                <div class="dropdown">  
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="lista" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      Permisos de usuario&nbsp;
+                      <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-scrollbar" role="menu" aria-labelledby="lista">
+                      {% for rol in users.roles if users %}
+                          {% for p in rol.permisos %}
+                              <li role="presentation">
+                                  <a role="item" class="disabled" style="cursor: default;">{{ p.nombre }}</a>
+                              </li>
+                          {% endfor %}     
+                      {% endfor %}
+                  </ul>
+                </div>        
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-8">
+                {% if errores is defined and errores["error_password"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_password"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="row form-group espaciador-div-input-top">
+              <hr style="background-color: #138496; height: 2px;">  
+            </div>
+            
+            {% if usr.id != users.id %}
+              <label style="margin-top: 25px;"><small>Eliminación de roles actuales</small></label>
+            {% else %}
+              <label style="margin-top: 25px;"><small>Roles actuales</small></label>
+            {% endif %}
+            <div class="row form-group">
+              {% for rol in users.roles %}
+              <div class="col-12 col-md-2" style="margin-bottom: 20px;">
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-default" id="botonCheck">
+                    {% if usr.id != users.id %}
+                      <input type="checkbox" value="{{ rol.nombre }}" name="lista_eliminar"><i class="fas fa-trash-alt" style="margin-right: 10px;"></i> {{ rol.nombre }}
+                    {% else %}
+                      <input type="checkbox" style="background: white; cursor: default;" value="{{ rol.nombre }}" name="lista_eliminar"> {{ rol.nombre }}
+                    {% endif %}
+                  </label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_roles"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_roles"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if usr.id != users.id %}
+            <label style="margin-top: 5px;"><small>Asignación de nuevos roles</small></label>
+            <div class="row form-group">
+              {% for rolBd in roles %}
+                {% if not(rolBd in users.roles) %}
+                  <div class="col-12 col-md-2" style="margin-bottom: 20px;">
+                    <div class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-default" id="botonCheck">
+                        <input type="checkbox" value="{{ rolBd.nombre }}" name="lista_agregar"><i class="fas fa-plus" style="margin-right: 10px;"></i> {{ rolBd.nombre }}
+                      </label>
+                    </div>
+                  </div>   
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            <input type="hidden" id="idModificar" name="idModificar" value="{{ users.id if users }}">
+          </div>
+          <div class="panel-footer text-right" style="margin-top: 20px;">
+            <a type="button" class="btn btn-default" href="{{ url_for('user_list') }}"
+              style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+            {% if usr.id != users.id %}
+              <button type="submit" class="btn btn-primary">Modificar</button>
+            {% endif %}      
+          </div>
+      </form>
+    </div>
+
+     <!-- Modal para eliminación -->
+     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <form action="{{ url_for('activar_desactivar', id=users.id) }}" method="POST">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                          confirmación
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                          </button>
+                      </h4>
+                  </div>
+                  <div class="modal-body" id="cuerpoModal">
+  
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                          data-dismiss="modal">Cancelar</button>
+                      <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                      <button type="submit" class="btn btn-primary">Aceptar</button>
+                  </div>
+              </div>
+          </div>
+      </form>
+    </div>
+
+        
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    <script>
+      function activarDesactivar(email, operacion) {
+        var text = "";
+        if (operacion == 'Activar') {
+            text = "¿Desea activar al usuario " + email + "?";  
+        }
+        else {
+            text = "¿Desea desactivar al usuario " + email + "?";
+        }
+        $('#cuerpoModal').empty();
+        $('#cuerpoModal').append(text);
+      }
+    </script>
+    
+
+{% endblock %}

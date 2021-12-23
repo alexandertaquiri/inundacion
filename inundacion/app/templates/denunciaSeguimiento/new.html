@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    #botonCheck:active {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:hover {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:active ::after {
+        background: #5cb85c;
+        color: white;
+    }
+    .btn-default.active {
+        background-color: #5cb85c;
+        color: white;
+    }
+    
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="container espaciador-div-top">
+      <form action="{{ url_for('seguimiento_create') }}" method="POST">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="fal fa-clipboard-list"
+                style="font-size: 29px; margin-right: 10px;"></i>Nuevo Seguimiento</h4>
+          </div>
+    
+        <div class="panel-body">
+    
+          <label for="input-name" style="margin-top: 0px; margin-right: 100px">Información del seguimiento:</label>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                <label for="descripcion" class="is-required"><small>Descripcion</small></label>
+                <input type="text" required class="form-control" id="descripcion" name="descripcion" placeholder=""
+                      value="">
+              </div>
+            </div> 
+            <div class="row form-group espaciador-div-input-top"></div> 
+              <div class="col-12 col-md-4">
+                <label for="autor" class="is-required"><small>Autor</small></label>
+                <select  name="autor">
+
+                  {% for user in users.items %}
+
+                  <option value={{ user.username }}>{{ user.username }}</option>
+
+                  {% endfor %}
+
+                </select>
+              </div>
+            </div>  
+
+            <input type="hidden" id="id" name="id" value="{{ denuncias.id }}"> 
+              
+           
+          <div class="panel-footer text-right">
+            <a type="button" class="btn btn-default" href=""
+              style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+            <button type="reset" class="btn btn-warning" style="margin-right: 10px;">Limpiar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+      </form>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}

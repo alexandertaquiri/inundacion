@@ -1,0 +1,299 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    #tabla {
+        background: white;
+        width: 100%;
+        padding: 20px 00px;
+        border-radius: 5px;
+        z-index: -1;
+    }
+    .elemento {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: black;
+    }
+    .titulo {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .form-group {
+        margin: 0px 0px;
+        padding: 0px 0px;
+    }
+    .dropdown-scrollbar {
+        height: 100px;
+        overflow: scroll;
+    }
+
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+    
+</style>
+
+
+
+{% endblock %}
+
+
+{% block content %}
+<div class="row form-group">
+    <div class="col-12 col-md-12">
+        <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+            <h2 style="color: white;">REVISION DE DENUNCIAS</h2>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-12 col-md-12">
+        
+        
+        <a type="button" href="{{ url_for('seguimiento_list', id=denuncias.id) }}" class="btn btn-success btn-lg" style="margin-bottom: 40px; border: 1px solid #ccc;"><i style="margin-right: 10px; font-size: 20px;" class="fal fa-clipboard-list"></i>Ver Seguimiento</a>
+    </div>
+</div>
+
+<div class="container" id="tabla">
+    <div class="col-12 col-md-12">
+        <table style="width: 100%;">
+            <thead>
+                <label for="input-name" style="margin-top: 0px; margin-right: 100px">Información de la denuncia:</label>
+                <tr>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Titulo</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Descripcion</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Categoria</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Fecha de creación</strong>
+                        </a>
+                    </th> 
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>fecha de cierre</strong>
+                        </a>
+                    </th>
+                </tr>
+                
+            </thead>
+            
+            <tbody>
+                
+             
+                <tr>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.titulo }}  
+                        </a>
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.descripcion }}  
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.categoria.nombre }}
+                        </a>
+                    </td>
+
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.fecha_creacion }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if denuncias.fecha_cierre == None %}
+
+                             <a href="" class="btn btn-outline-primary disabled elemento" role="button" placeholder="" >
+                            </a>
+                            {% else  %}
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                               {{ denuncias.fecha_cierre}}
+                            </a>
+                            {% endif %}
+                    </td>
+
+                </tr>
+                
+                
+            </tbody>
+            
+            <thead>
+                
+                <tr>
+                    
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>latitud</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>longitud</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>estado</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>asignado a:</strong>
+
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.latitud }}
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.longitud }}
+                        </a>
+                    </td>
+
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.estado }}
+                        </a>
+                    </td>
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.asignado_a }}
+                        </a>
+                    </td>
+
+                </tr>
+            
+            
+            </tbody>
+               
+            <thead>
+                
+                <tr>
+                    
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>apellido del denunciante</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>nombre del denunciante</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>telefono del denunciante</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>email del denunciante</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>intentos de comunicacion</strong>
+                        </a>
+                    </th>
+                    
+                       
+                </tr>
+            </thead>
+            
+            <tbody>
+                
+                
+                <tr>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.apellido_denunciante }}
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.nombre_denunciante }}
+                        </a>
+                    </td>
+
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.tel_cel_denunciante }}
+                        </a>
+                    </td>
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.email_denunciante }}
+                        </a>
+                    </td>
+                    <td style="text-align: center;"> 
+                    {% if denuncias.estado != "cerrado" and denuncias.estado != "resuelta" %}    
+                        <a href="{{ url_for('denuncia_incrementar', id=denuncias.id) }}" class="btn btn-warning" onclick=""><i class="far">Incrementar</i></a>
+                    {% endif%}
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncias.intentos_comunicacion }}
+                            
+                        </a>
+                        
+                    </td>
+
+                </tr>
+                
+                
+            </tbody>
+           
+
+        </table>
+        <div class="panel-footer text-right" style="margin-top: 20px;">
+            <a type="button" class="btn btn-default" href="{{ url_for('denuncia_list') }}"
+              style="border: 1px solid #138496; margin-right: 10px;">Volver</a>
+            {% if denuncias.estado != "resuelta" and denuncias.estado != "cerrado" %}  
+              <a href="{{ url_for('denuncia_resolver', id=denuncias.id) }}" class="btn btn-warning" onclick=""><i class="far">Resolver</i></a>  
+            {% endif %}      
+          </div>
+        
+    </div>
+</div> 
+   
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+{% endblock %}       

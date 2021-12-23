@@ -1,0 +1,335 @@
+{% extends "layout.html" %}
+{% block head %}
+
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    
+     
+    <style>
+        #tabla {
+            background: white;
+            width: 100%;
+            padding: 20px 20px;
+            border-radius: 5px;
+        }
+        .elemento {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: black;
+        }
+        .titulo {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin: 0px 0px;
+            padding: 0px 0px;
+        }
+        
+        body {
+            background: {{ datosConfig['coloresPrivados'][0] }};
+        }
+
+        #navColorHeader {
+            background: {{ datosConfig['coloresPrivados'][1] }};
+        }
+
+        #navColorFooter {
+            background: {{ datosConfig['coloresPrivados'][2] }};
+        }
+
+        textarea {
+            overflow-x: scroll;
+            resize: none;
+            max-height: 70px;
+            width: 200px;
+            border: 1px solid #ccc;
+        }
+        
+    </style>
+
+
+    <div class="container">
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+                    <h2 style="color: white;">RECORRIDOS&nbsp;&nbsp;DE&nbsp;&nbsp;EVACUACIÓN</h2>
+                </div>
+            </div>
+        </div>
+
+        {% if user.tiene_permiso("recorrido_evacuacion_new") %}
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <a type="button" href="{{ url_for('recorridosEvacuacion_new') }}" class="btn btn-success btn-lg" style="margin-bottom: 40px; border: 1px solid #ccc;"><i class="fas fa-route" style="margin-right: 10px;"></i>Agregar</a>
+            </div>
+        </div> 
+        {% endif %}
+    </div>
+       
+
+    <div class="container" id="tabla">
+        <div class="row form-group" style="margin-bottom: 40px; margin-top: 20px;">
+            <form action="{{ url_for('recorridosEvacuacion_byNombre') }}">
+                <div class="col-12 col-md-4">
+                    <input type="text" id="byNombre" name="byNombre" class="form-control" placeholder="Filtrar por nombre...">
+                </div>
+    
+                <div class="col-12 col-md-1">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+            
+            <div class="col-12 col-md-2">
+                
+            </div>
+      
+            <form action="{{ url_for('recorridosEvacuacion_estado') }}" method="POST">
+                <div class="col-12 col-md-4">
+                    <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+                        <option value="Todos" selected>Todos</option>
+                        <option value="1">Publicado</option>
+                        <option value="0">Despublicado</option>
+                    </select>
+                </div>
+                
+                <div class="col-12 col-md-1">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div> 
+        
+
+        <div class="col-12 col-md-12">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Nombre</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Descripción</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Estado</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Acciones</strong>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for recorrido in recorridosEvacuacion.items %}
+                    <tr>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ recorrido.nombre }}
+                            </a>
+                        </td>
+                        <td>
+                            <textarea readonly role="button">{{ recorrido.descripcion }}</textarea>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {% if recorrido.publicado == True %}
+                                
+                                Publicado
+
+                                {% else %}
+
+                                Despublicado
+
+                                {% endif %}
+                            </a>
+                        </td>
+                        
+                        <td>
+                            {% if user.tiene_permiso("recorrido_evacuacion_update") %}
+                            <a class="btn btn-warning" onclick="editar('{{ recorrido.id }}');"><i class="far fa-edit"></i></a>
+                            {% endif %}
+        
+                            {% if user.tiene_permiso("recorrido_evacuacion_destroy") %}
+                                <a class="btn btn-danger" onclick="borrar('{{ recorrido.id }}');" data-toggle="modal" data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination Links-->
+            <div class="text-right" style="margin-top: 20px;">
+
+                {% if criterios is defined and criterios["estado"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_estado', page=recorridosEvacuacion.prev_num, estado= criterios['estado']) }}" class="btn btn-default 
+                       {% if recorridosEvacuacion.page == 1 %}disabled{% endif %}">
+                        &laquo;
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["nombre"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_byNombre', page=recorridosEvacuacion.prev_num, byNombre= criterios['nombre']) }}" class="btn btn-default 
+                        {% if recorridosEvacuacion.page == 1 %}disabled{% endif %}">
+                        &laquo;
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["index"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_list', page=recorridosEvacuacion.prev_num) }}" class="btn btn-default 
+                        {% if recorridosEvacuacion.page == 1 %}disabled{% endif %}">
+                        &laquo;
+                    </a>
+                {% endif %}
+
+
+                <!-- Loop through the number of pages to display a link for each-->
+                {% for page_num in recorridosEvacuacion.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                <!-- Check for the active page and set the link to "Active"-->
+                {% if recorridosEvacuacion.page == page_num %}
+
+                    {% if criterios is defined and criterios["estado"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_estado', page=page_num, estado= criterios['estado']) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                    {% if criterios is defined and criterios["nombre"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_byNombre', page=page_num, byNombre= criterios['nombre']) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                    {% if criterios is defined and criterios["index"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_list', page=page_num) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                {% else %}
+
+                    {% if criterios is defined and criterios["estado"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_estado', page=page_num, estado= criterios['estado']) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                    {% if criterios is defined and criterios["nombre"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_byNombre', page=page_num, byNombre= criterios['nombre']) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                    {% if criterios is defined and criterios["index"] is defined %}
+                        <a href="{{ url_for('recorridosEvacuacion_list', page=page_num) }}" class="btn btn-info">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+
+                {% endif %}
+                {% else %}
+                ...
+                {% endif %}
+                {% endfor %}
+
+                {% if criterios is defined and criterios["estado"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_estado', page=recorridosEvacuacion.next_num, estado= criterios['estado']) }}" class="btn btn-default 
+                       {% if recorridosEvacuacion.page == recorridosEvacuacion.pages %}disabled{% endif %}">
+                        &raquo;
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["nombre"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_byNombre', page=recorridosEvacuacion.next_num, byNombre= criterios['nombre']) }}" class="btn btn-default 
+                       {% if recorridosEvacuacion.page == recorridosEvacuacion.pages %}disabled{% endif %}">
+                        &raquo;
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["index"] is defined %}
+                    <a href="{{ url_for('recorridosEvacuacion_list', page=recorridosEvacuacion.next_num) }}" class="btn btn-default 
+                       {% if recorridosEvacuacion.page == recorridosEvacuacion.pages %}disabled{% endif %}">
+                        &raquo;
+                    </a>
+                {% endif %}
+
+            </div>
+            <p class="text-left" style="margin-top: 20px;">
+                Mostrando página <strong>{{ recorridosEvacuacion.page }}</strong> de <strong>{{ recorridosEvacuacion.pages }}</strong> páginas
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Envío de id para la modificación -->
+    <form id="envioModificar" action="{{ url_for('recorridosEvacuacion_viewModify') }}" method="POST">
+        <input id="idModificar" name="idModificar" type="hidden" value="">
+    </form>
+
+
+    <!-- Modal para eliminación -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form action="{{ url_for('recorridosEvacuacion_delete') }}" method="POST">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                            confirmación
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="cuerpoModal">
+    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                        <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+   
+
+    <script>
+        function editar(id) {
+            $("#idModificar").val(id);
+            $("#envioModificar").submit();
+        }
+
+        function borrar(id) {
+            $("#idBorrar").val(id);
+            $('#cuerpoModal').empty();
+            $('#cuerpoModal').append("¿Desea eliminar el recorrido de evacuación seleccionado?");
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#envioModificar").hide();
+        });
+    </script>
+
+    
+
+{% endblock %}

@@ -1,0 +1,503 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    #tabla {
+        background: white;
+        width: 106%;
+        padding: 20px 00px;
+        border-radius: 5px;
+        z-index: -1;
+    }
+    .elemento {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: black;
+    }
+    .titulo {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .form-group {
+        margin: 0px 0px;
+        padding: 0px 0px;
+    }
+    .dropdown-scrollbar {
+        height: 100px;
+        overflow: scroll;
+    }
+
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+    
+</style>
+
+
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- Aca todo el codigo -->
+
+<div class="row form-group">
+    <div class="col-12 col-md-12">
+        <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+            <h2 style="color: white;">DENUNCIAS</h2>
+        </div>
+    </div>
+</div>
+
+
+<div class="row form-group">
+    <div class="col-12 col-md-12">
+        
+        <a type="button" href="{{ url_for('denuncia_new') }}" class="btn btn-success btn-lg" style="margin-bottom: 40px; border: 1px solid #ccc;"><i style="margin-right: 10px; font-size: 20px;" class="fal fa-clipboard-list"></i>Agregar</a>
+        
+    </div>
+</div>
+
+<div class="container" id="tabla">
+
+    <div class="row form-group" style="margin-bottom: 20px; margin-top: 20px;">
+
+        <form action="{{ url_for('denuncia_byTitulo') }}">
+            <div class="col-12 col-md-3">
+                <input type="text" id="byTitulo" name="byTitulo" class="form-control" placeholder="Filtrar por titulo de denuncia...">
+            </div>
+
+            <div class="col-12 col-md-1">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+        </form>
+        
+        <form action="{{ url_for('denuncia_filtrarPorFecha') }}">
+
+                <div class="col-12 col-md-2">
+                    <input type="date" class="form-control" id="filtrarPorFecha" name="fecha_inicio">
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <input type="date" class="form-control" id="filtrarPorFecha" name="fecha_fin"> 
+                </div>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+
+        </form>
+
+        
+    
+        <form action="{{ url_for('denuncia_estado') }}" method="POST">
+            <div class="col-12 col-md-2" style="margin-left: 900px; bottom: 34px;">
+                <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+                    <option selected>Todas</option>
+                    <option value="Sin confirmar">Sin confirmar</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Resuelta">Resuelta</option>
+                    <option value="Cerrada">Cerrada</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-1"  style="bottom: 34px;">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+
+    </div> 
+    
+
+    <div class="col-12 col-md-12">
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Titulo</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Categoria</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Fecha de creación</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Fecha de cierre</strong>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Estado</strong>
+                        </a>
+                    </th>
+
+                    <th>
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Usuario asignado</strong>
+                        </a>
+                    </th>
+
+
+                    <th style="text-align: center;">
+                        <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                            <strong>Acciones</strong>
+                        </a>
+                    </th>
+                   
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for denuncia in denuncias.items %}
+                <tr>
+
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncia.titulo }}
+                        </a>
+                    </td>
+    
+                    <td>
+                        
+                        
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncia.categoria.nombre }}
+                        </a>
+                        
+                      
+                    </td>
+    
+                    <td style="text-align: center;"> 
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncia.fecha_creacion }}
+                        </a>
+                    </td>
+    
+                    <td>
+                        {% if denuncia.fecha_cierre == None %}
+
+                             <a href="" class="btn btn-outline-primary disabled elemento" role="button" placeholder="" >
+                            </a>
+                            {% else  %}
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                               {{ denuncia.fecha_cierre}}
+                            </a>
+                            {% endif %}
+                    </td>
+    
+                    <td>
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncia.estado}}
+                        </a>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                            {{ denuncia.asignado_a}}
+                        </a>
+                    </td>
+
+                    <td style="text-align: center;">
+
+                        <a href="{{ url_for('denuncia_revision', id=denuncia.id) }}" class="btn btn-warning" onclick=""><i class="far fa-edit">Ver denuncia</i></a>
+                        
+                        <a class="btn btn-warning" onclick="editar('{{ denuncia.id }}');"><i class="far fa-edit"></i></a>
+                        
+                        {% if usr.tiene_permiso("denuncia_destroy") %}
+                        <a class="btn btn-danger" onclick="borrar('{{ denuncia.id }}');" data-toggle="modal" data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>
+                        {% endif %}
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        <!-- Modal para detalle -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                        
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="far fa-file-alt" style="font-size: 20px; margin-right: 10px;"></i>
+                        Denuncias en detalle
+                    </h4>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="row form-group" style="margin-top: 20px;">
+                            <div class="col-12 col-md-6">
+                                <label for="nombre_denunciante"><small>Nombre</small></label>
+                                <input type="text" class="form-control" id="nombre_denunciante" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="apellido_denunciante"><small>Apellido</small></label>
+                                <input type="text" class="form-control" id="apellido_denunciante" value="" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top">
+                            <div class="col-12 col-md-6">
+                                <label for="descripcion"><small>Descripcion</small></label>
+                                <input type="text" class="form-control" id="descripcion" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="tel_cel_denunciante"><small>Teléfono</small></label>
+                                <input type="text" class="form-control" id="tel_cel_denunciante" value="" readonly>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="categoria"><small>Categoria</small></label>
+                                <input type="text" class="form-control" id="categoria" value="" readonly>
+                                
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top">
+                            <div class="col-12 col-md-6">
+                                <label for="latitud"><small>Latitud</small></label>
+                                <input type="text" class="form-control" id="latitud" value="" readonly>
+                            </div>
+    
+                            <div class="col-12 col-md-6">
+                                <label for="longitud"><small>Longitud</small></label>
+                                <input type="text" class="form-control" id="longitud" value="" readonly>
+                            </div>
+                        </div>
+    
+                        <div class="row form-group espaciador-div-input-top" style="margin-bottom: 30px;">
+                            <div class="col-12 col-md-12">
+                                <label for="email_denunciante"><small>Email</small></label>
+                                <input type="text" class="form-control" id="email_denunciante" value="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                </div>
+
+                
+        </div>
+
+    </div>
+
+    </div>
+
+
+    <!-- Envío de id para la modificación de denuncia -->
+    <form id="envioModificar" action="{{ url_for('denuncia_viewModify') }}" method="POST">
+        <input id="idModificar" name="idModificar" type="hidden" value="">
+    </form>
+
+        <br>
+
+        <!-- <div style="text-align: right; margin-bottom: 20px;">
+            {% for page_num in denuncias.iter_pages(left_edge=1, right_edge=1,
+            left_current=1, right_current=1) %} {% if page_num %} {% if denuncias.page ==
+            page_num %}
+            <a class="btn btn-info mb-4" href="{{ url_for('denuncia_list', page=page_num) }}">{{ page_num }}</a>
+            {% if page_num != denuncias.pages %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('denuncia_list', page=page_num+1) }}">{{ page_num+1 }}</a>
+            {% endif %}
+            {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('denuncia_list', page=page_num) }}">{{ page_num }}</a>
+            {% endif %} {% else %} ... {% endif %} {% endfor %}
+        </div> -->
+         
+         <!-- Pagination Links-->
+         <div class="text-right" style="margin-top: 20px;">
+            {% if criterios is defined and criterios["estado"] is defined %}
+                <a href="{{ url_for('denuncia_estado', page=denuncias.prev_num, estado=criterios['estado']) }}" class="btn btn-default 
+                   {% if denuncias.page == 1 %}disabled{% endif %}">
+                    &laquo;
+                </a>
+            {% endif %}
+
+            {% if criterios is defined and criterios["byTitulo"] is defined %}
+                <a href="{{ url_for('denuncia_byTitulo', page=denuncias.prev_num, byTitulo=criterios['byTitulo']) }}" class="btn btn-default 
+                    {% if denuncias.page == 1 %}disabled{% endif %}">
+                    &laquo;
+                </a>
+            {% endif %}
+
+
+            {% if criterios is defined and criterios["index"] is defined %}
+                <a href="{{ url_for('denuncia_list', page=denuncias.prev_num) }}" class="btn btn-default 
+                    {% if denuncias.page == 1 %}disabled{% endif %}">
+                    &laquo;
+                </a>
+            {% endif %}
+
+
+            <!-- Loop through the number of pages to display a link for each-->
+            {% for page_num in denuncias.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+            <!-- Check for the active page and set the link to "Active"-->
+            {% if denuncias.page == page_num %}
+
+                {% if criterios is defined and criterios["estado"] is defined %}
+                    <a href="{{ url_for('denuncia_estado', page=page_num, estado=criterios['estado']) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["byTitulo"] is defined %}
+                    <a href="{{ url_for('denuncia_byTitulo', page=page_num, byTitulo=criterios['byTitulo']) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["index"] is defined %}
+                    <a href="{{ url_for('denuncia_list', page=page_num) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+            {% else %}
+
+                {% if criterios is defined and criterios["estado"] is defined %}
+                    <a href="{{ url_for('denuncia_estado', page=page_num, estado=criterios['estado']) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["byTitulo"] is defined %}
+                    <a href="{{ url_for('denuncia_byTitulo', page=page_num, byTitulo= criterios['byTitulo']) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+                {% if criterios is defined and criterios["index"] is defined %}
+                    <a href="{{ url_for('denuncia_list', page=page_num) }}" class="btn btn-info">
+                        {{ page_num }}
+                    </a>
+                {% endif %}
+
+            {% endif %}
+            {% else %}
+            ...
+            {% endif %}
+            {% endfor %}
+
+            {% if criterios is defined and criterios["estado"] is defined %}
+                <a href="{{ url_for('denuncia_estado', page=denuncias.next_num, estado= criterios['estado']) }}" class="btn btn-default 
+                   {% if denuncias.page == denuncias.pages %}disabled{% endif %}">
+                    &raquo;
+                </a>
+            {% endif %}
+
+            {% if criterios is defined and criterios["byTitulo"] is defined %}
+                <a href="{{ url_for('denuncia_byTitulo', page=denuncias.next_num, byTitulo= criterios['byTitulo']) }}" class="btn btn-default 
+                   {% if denuncias.page == denuncias.pages %}disabled{% endif %}">
+                    &raquo;
+                </a>
+            {% endif %}
+
+            {% if criterios is defined and criterios["index"] is defined %}
+                <a href="{{ url_for('denuncia_list', page=denuncias.next_num) }}" class="btn btn-default 
+                   {% if denuncias.page == denuncias.pages %}disabled{% endif %}">
+                    &raquo;
+                </a>
+            {% endif %}
+        </div>
+
+        <div>
+            <a type="button" class="btn btn-default" href="/"
+              style="border: 1px solid #138496; margin-right: 10px;">Volver</a>
+                  
+        </div>
+
+
+       </div>
+    
+    </div>
+</div>
+
+
+<!-- Modal para eliminación -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="{{ url_for('denuncia_delete') }}" method="POST">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                        confirmación
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body" id="cuerpoModal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                        data-dismiss="modal">Cancelar</button>
+                    <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                    <button type="submit" class="btn btn-danger">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- Aca todo el codigo -->
+
+
+
+<script>
+
+    function borrar(id) {
+        $("#idBorrar").val(id);
+        $('#cuerpoModal').empty();
+        $('#cuerpoModal').append("¿Desea eliminar la denuncia seleccionada?");
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+<script src="/static/scripts/jquery-1.10.2.js"></script>
+<script src="/static/scripts/bootstrap.js"></script>
+<script>
+    function editar(id) {
+        $("#idModificar").val(id);
+        $("#envioModificar").submit();
+    }
+
+    
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#envioModificar").hide();
+    });
+</script>
+
+{% endblock %}
+
+

@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+
+    {% block head %}
+
+    
+        
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <header>
+          <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" id="navColorHeader">
+              <div class="container-fluid">
+                  <div class="navbar-header">
+                      
+                      <!-- Realización del botón que despliega la barra de navegación, en tamaño de pantalla reducido -->
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#identificador">
+                          <span class="sr-only">Menú</span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                      </button>
+
+                      
+                      <a href="/" class="navbar-log"> <img width="50px" height="50px" src="/static/imagenes/logoActual.png"></a>
+                  </div>
+
+                  <div class="collapse navbar-collapse" id="identificador">
+                      <ul class="nav navbar-nav" role="tablist">
+                          {% if is_authenticated(session) %}
+                          <!-- <li><a href="">Item 1</a></li>
+                          <li class="active"><a href="">Item 2</a></li>
+                          <li><a href="">Item 3</a></li> -->
+                          
+                          
+                          <li>
+                            <a href="{{ url_for('puntosEncuentro_list') }}">Puntos de encuentro</a>
+                          </li>
+                          
+        
+                          
+                          <li>
+                            <a href="{{ url_for('user_list') }}">Usuarios</a>
+                          </li>
+
+
+                          <li>
+                            <a href="{{ url_for('recorridosEvacuacion_list') }}">Recorridos</a>
+                          </li>
+
+                         
+
+                          <li>
+                            <a href="{{ url_for('configuracion_index') }}">Configuración</a>
+                          </li>
+                         
+
+                          <li>
+                            <a href="{{ url_for('denuncia_list') }}">Denuncias</a>
+                          </li>
+
+
+                        
+  
+                          
+                          <li>
+                            <a href="{{ url_for('zona_index') }}">Zonas inundables</a>
+                          </li>
+  
+                          <!-- <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdown">
+                                  dropdown-1
+                                  <span class="caret"></span>
+                              </a>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown">
+                                  <li role="presentation"><a role="item" href="#">Opción 1</a></li>
+                                  <li role="presentation"><a role="item" href="#">Opción 2</a></li>
+                                  <li role="presentation"><a role="item" href="#">Opción 3</a></li>
+                                  <li role="presentation"><a role="item" href="#">Opción 4</a></li>
+                              </ul>
+                          </li> -->
+                          {% endif %}
+                      </ul>    
+
+                    
+                      {% if is_authenticated(session) %}
+                      <ul class="nav navbar-nav navbar-right" role="tablist">
+                                                    
+                          <li class="dropdown" >
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdown2">
+                                  <i style="font-size: 20px; color: yellow; " class="far fa-user"></i>
+                                  <span class="caret"></span>
+                              </a>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown2" style=" background-color: gray; border-color: yellow;">
+                                  <li role="presentation"><a role="item" class="dropdown-item" href="{{ url_for('user_perfil') }}" style="color: black" >Perfil</a></li>
+                                  <li role="presentation"><a role="item" class="dropdown-item" href="{{ url_for('auth_logout') }}" style="color:black;">Cerrar sesión</a></li>
+                                  <br></br>
+                              </ul>
+                          </li>
+                      </ul>
+                      {% endif %}
+                  </div>
+
+              </div>    
+          </nav>
+      </header>
+
+
+    <div id="content">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}
+      {% endblock %}
+    </div>
+
+
+    <div class="container" style="margin-top: 100px;">
+      <footer>
+        <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse" role="navigation" id="navColorFooter">
+          <div class="container">
+            <div class="row form-group">
+              <div class="col-12 col-xs-3">
+    
+              </div>
+    
+              <div class="col-12 col-xs-6">
+                <ul class="nav navbar-nav" role="tablist">
+                  <li><a style="cursor: default; color: yellow;" href="">© 2021 Copyright | Todos los derechos reservados |
+                      La Plata, Argentina</a></li>
+                </ul>
+              </div>
+    
+              <div class="col-12 col-xs-3">
+    
+              </div>
+            </div>
+          </div>
+        </nav>
+      </footer>
+    </div>
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    #botonCheck:active {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:hover {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:active ::after {
+        background: #5cb85c;
+        color: white;
+    }
+    .btn-default.active {
+        background-color: #5cb85c;
+        color: white;
+    }
+    
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="container espaciador-div-top">
+      <form action="{{ url_for('user_create') }}" method="POST">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="fas fa-user-plus"
+                style="font-size: 20px; margin-right: 10px;"></i>Nuevo usuario</h4>
+          </div>
+    
+          <div class="panel-body">
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="first_name" class="is-required"><small>Nombre</small></label>
+                <input type="text" required class="form-control" id="first_name" name="first_name" placeholder=""
+                  value="{{ datos.first_name if datos }}">
+              </div>
+    
+              <div class="col-12 col-md-6">
+                <label for="last_name" class="is-required"><small>Apellido</small></label>
+                <input type="text" required class="form-control" id="last_name" name="last_name" placeholder=""
+                  value="{{ datos.last_name if datos }}">
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_nombreCompleto"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_nombreCompleto"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                <label for="username" class="is-required"><small>Nombre de usuario</small></label>
+                <input required type="text" class="form-control" id="username" name="username" placeholder=""
+                  value="{{ datos.username if datos }}">
+              </div>
+    
+              <div class="col-12 col-md-4">
+                <label for="email" class="is-required"><small>Email</small></label>
+                <input required type="email" class="form-control" id="email" name="email" placeholder=""
+                  value="{{ datos.email if datos }}">
+              </div>
+    
+              <div class="col-12 col-md-4">
+                <label for="estado" class="is-required"><small>Estado</small></label>
+                <select required class="form-control" id="estado" name="estado" value="{{ datos.estado if datos }}">
+                  <option value="1">Activo</option>
+                  <option value="0">Inactivo</option>
+                </select>
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-4">
+                {% if errores is defined and errores["error_username"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_username"] }}
+                </div>
+                {% endif %}
+              </div>
+    
+              <div class="col-12 col-md-4">
+                {% if errores is defined and errores["error_email"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_email"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="password" class="is-required"><small>Contraseña</small></label>
+                <input mdInput required type="password" class="form-control" id="password" name="password" placeholder=""
+                  [formControl]="formGroup.controls['password']" autocomplete="new-password" #password
+                  value="{{ datos.password if datos }}">
+              </div>
+    
+              <div class="col-12 col-md-6">
+                <label for="confirmacionPassword" class="is-required"><small>Confirmación de contraseña</small></label>
+                <input required type="password" class="form-control" id="confirmacionPassword" name="confirmacionPassword"
+                  placeholder="" value="{{ datos.confirmacionPassword if datos }}">
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_password"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_password"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <label class="is-required" style="margin-top: 25px;"><small>Asignación de roles</small></label>
+            <div class="row form-group">
+              {% for rol in roles %}
+              <div class="col-12 col-md-2" style="margin-bottom: 20px;">
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-default" id="botonCheck">
+                    <input type="checkbox" value="{{ rol.nombre }}" name="list_checkbox"><i class="fas fa-plus" style="margin-right: 10px;"></i> {{ rol.nombre }}
+                  </label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_roles"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_roles"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer text-right">
+            <a type="button" class="btn btn-default" href="{{ url_for('user_list') }}"
+              style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+            <button type="reset" class="btn btn-warning" style="margin-right: 10px;">Limpiar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+      </form>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}
+      

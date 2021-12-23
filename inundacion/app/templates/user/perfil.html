@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    #botonCheck:active {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:hover {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:active ::after {
+        background: #5cb85c;
+        color: white;
+    }
+    .btn-default.active {
+        background-color: #5cb85c;
+        color: white;
+    }
+    .dropdown-scrollbar {
+        height: 100px;
+        overflow: scroll;
+    }
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }       
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container espaciador-div-top">
+      <form action="{{ url_for('user_modificar_confirm') }}" method="POST">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;">
+                <i class="fas fa-user-tag" style="font-size: 20px; margin-right: 10px;"></i>
+                Perfil de usuario
+              </h4>
+          </div>
+    
+          <div class="panel-body">
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="first_name"><small>Nombre</small></label>
+                 <input type="text" readonly class="form-control" id="first_name" name="first_name" placeholder=""
+                    value="{{ users.first_name if users }}">  
+              </div>
+    
+              <div class="col-12 col-md-6">
+                  <label for="last_name"><small>Apellido</small></label>
+                  <input type="text" readonly class="form-control" id="last_name" name="last_name" placeholder=""
+                    value="{{ users.last_name if users }}">
+              </div>
+
+            </div>
+
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="username"><small>Nombre de usuario</small></label>
+                <input readonly type="text" class="form-control" id="username" name="username" placeholder=""
+                    value="{{ users.username if users }}">
+              </div>
+              
+              <div class="col-12 col-md-6">
+                <label for="email"><small>Email</small></label>
+                <input readonly type="email" class="form-control" id="email" name="email" placeholder="" value="{{ users.email if users }}">
+              </div>
+            </div>
+        
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                <label for="password"><small>Contraseña</small></label>
+                <input readonly type="password" class="form-control" id="password" name="password" placeholder="" value="{{ users.password if users }}">
+              </div>
+    
+              <div class="col-12 col-md-4">
+                <label for="confirmacionPassword"><small>Confirmación de contraseña</small></label>
+                <input readonly type="password" class="form-control" id="confirmarPassword" name="confirmarPassword" placeholder="" value="{{ users.password if users }}">
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="lista"><small>Detalle</small></label>  
+                <div class="dropdown">  
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="lista" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      Permisos de usuario&nbsp;
+                      <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-scrollbar" role="menu" aria-labelledby="lista">
+                      {% for rol in users.roles if users %}
+                          {% for p in rol.permisos %}
+                              <li role="presentation">
+                                  <a role="item" class="disabled" style="cursor: default;">{{ p.nombre }}</a>
+                              </li>
+                          {% endfor %}     
+                      {% endfor %}
+                  </ul>
+                </div>        
+              </div>
+            </div>
+
+            <div class="row form-group espaciador-div-input-top">
+              <hr style="background-color: #138496; height: 2px;">  
+            </div>
+            
+            <label style="margin-top: 25px;"><small>Roles actuales</small></label>
+            <div class="row form-group">
+              {% for rol in users.roles %}
+              <div class="col-12 col-md-2" style="margin-bottom: 20px;">
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-default" id="botonCheck">            
+                    <input type="checkbox" style="background: white; cursor: default;" value="{{ rol.nombre }}" name="lista_eliminar"> {{ rol.nombre }} 
+                  </label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="panel-footer text-right" style="margin-top: 20px;">
+            <a type="button" class="btn btn-primary" href="{{ url_for('home') }}"> Volver</a>     
+          </div>
+      </form>
+    </div>
+
+        
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}

@@ -1,0 +1,98 @@
+
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+
+{% if is_authenticated(session) %}
+
+    <style>
+      body {
+          background: {{ datosConfig['coloresPrivados'][0] }};
+      }
+
+      #navColorHeader {
+          background: {{ datosConfig['coloresPrivados'][1] }};
+      }
+
+      #navColorFooter {
+          background: {{ datosConfig['coloresPrivados'][2] }};
+      }
+    </style>
+
+
+<div class="container">
+
+  <h1 style="padding-top: 60px;">Bienvenido&nbsp;&nbsp;a&nbsp;&nbsp;Zonas&nbsp;&nbsp;Inundables&nbsp;&nbsp;LP</h1>
+
+</div>
+
+
+   <!-- LE AGREGAMOS ALGUNA IMAGEN CUANDO SE LOGUEA, O DEJAMOS EN BLANCO? -->
+
+{% else %}
+
+    <style>
+      body {
+          background: {{ datosConfig['coloresPublicos'][0] }};
+      }
+
+      #navColorHeader {
+          background: {{ datosConfig['coloresPublicos'][1] }};
+      }
+
+      #navColorFooter {
+          background: {{ datosConfig['coloresPublicos'][2] }};
+      }
+    </style>
+
+
+<div class="container">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleLogin.css')}}">
+  <section class="form-login">
+      <h5>Iniciar sesión</h5>
+    <form action="{{ url_for('auth_authenticate') }}" method="POST">
+      <input class="controls" type="email" name="email" placeholder="Correo" required/>
+      <input class="controls" type="password" name="password" placeholder="Contraseña" required autocomplete="off"/>
+      <input class="buttons" type="submit" name="" value="Ingresar">
+      <input class="buttons" type="reset" name="" value="Limpiar">
+    </form>
+    <br>
+    <a class="btn btn-primary" style="text-align: center; margin-left: 40px;" href="{{ url_for('auth_login_google') }}">Ingresar con <i class="fab fa-google"></i>oogle</a>
+  </section>
+</div>
+<br><br><br>
+<div class="row form-group">
+  <div class="col-12 col-md-12">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+       {% for message in messages %}
+         <div class="alert alert-warning" role="alert" style="text-align: center;">
+           <strong>{{ message }}</strong> 
+         </div>
+       {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+
+
+
+
+
+
+
+{% endif %}
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+<script src="/static/scripts/jquery-1.10.2.js"></script>
+<script src="/static/scripts/bootstrap.js"></script>
+
+{% endblock %}
+

@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }    
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row form-group">
+    <div class="col-12 col-md-12">
+        <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+            <h2 style="color: white;">CONFIGURACIÓN</h2>
+        </div>
+    </div>
+</div>
+        
+    <div class="container espaciador-div-top">
+
+    
+        <form action="{{ url_for('configuracion_modificada') }}" method="POST">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="glyphicon glyphicon-cog" style="font-size: 20px; margin-right: 10px;"></i>{{ title }}</h4>
+                </div>
+
+               
+                
+                <div class="panel-body">
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label for="nombre" class=""><small>Nombre de configuración actual</small></label>
+                            <input type="text" required class="form-control" placeholder="" value="{{ datosConfig['nombre'] }}" disabled>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="email" class="is-required"><small>Cantidad de elementos por página (Máximo 10)</small></label>
+                            <input required type="number" class="form-control" name="cant_element" placeholder="Actualmente {{ datosConfig['cantidad'] }} " max="10" required>
+                        </div>                      
+                    </div>
+                
+    
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="panel-heading">
+                            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="glyphicon glyphicon-tint" style="font-size: 20px; margin-right: 10px;"></i>Colores sección pública</h4>
+                        </div> <br>    
+                        <div class="col-12 col-md-6">
+                            <label for="dirección" class=""><small>Color público 1</small></label>
+                            <input required type="color" class="form-control" name="colores_pub1" placeholder="Primer color publico" value="{{ datosConfig['coloresPublicos'][0] }}">
+                        </div>
+    
+                        <div class="col-12 col-md-6">
+                            <label for="telefono" class=""><small>Color público 2</small></label>
+                            <input required type="color" class="form-control" name="colores_pub2" placeholder="Segundo color publico" value="{{ datosConfig['coloresPublicos'][1] }}">
+                        </div>
+    
+                        <div class="col-12 col-md-6">
+                            <label for="latitud" class=""><small>Color público 3</small></label>
+                            <input required type="color" class="form-control" name="colores_pub3" placeholder="Tercer color publico" value="{{ datosConfig['coloresPublicos'][2] }}">
+                        </div>
+                    </div>
+
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="panel-heading">
+                            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="glyphicon glyphicon-tint" style="font-size: 20px; margin-right: 10px;"></i>Colores sección privada</h4>
+                        </div> <br>    
+
+                        <div class="col-12 col-md-6">
+                            <label for="longitud" class=""><small>Color privado 1</small></label>
+                            <input required type="color" class="form-control" name="colores_priv1" placeholder="Primer color privado" value="{{ datosConfig['coloresPrivados'][0] }}">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="longitud" class=""><small>Color privado 2</small></label>
+                            <input required type="color" class="form-control" name="colores_priv2" placeholder="Segundo color privado" value="{{ datosConfig['coloresPrivados'][1] }}">
+                        </div>
+            
+                        <div class="col-12 col-md-6">
+                            <label for="longitud" class=""><small>Color privado 3</small></label>
+                            <input required type="color" class="form-control" name="colores_priv3" placeholder="Tercer color privado" value="{{ datosConfig['coloresPrivados'][2] }}">
+                        </div>
+                    </div>
+                
+                    <!-- <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label><small>Estado Actual</small></label>
+                            <input type="text" class="form-control" value="{{ datos.estado if datos }}" readonly>
+                        </div> -->
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="panel-heading">
+                            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="glyphicon glyphicon-sort" style="font-size: 20px; margin-right: 10px;"></i>Criterios de ordenación</h4>
+                        </div> <br>    
+
+                        <div class="col-12 col-md-6">
+                            <label for="estado" class=""><small>Criterio actual: {{ datosConfig['criterioOrdenacion'] }}</small></label>
+                            <select required class="form-control" id="estado" name="criterio_elegido">
+                                <option value="{{ criterios[0].id }}">{{ criterios[0].nombre }}</option>
+                                <option value="{{ criterios[1].id }}">{{ criterios[1].nombre }}</option>
+                                <option value="{{ criterios[2].id }}">{{ criterios[2].nombre }}</option>
+                                <option value="{{ criterios[3].id }}">{{ criterios[3].nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="nombre" value="Nueva personalizada">
+    
+                <div class="panel-footer text-right" style="margin-top: 20px;">
+                    <a type="button" class="btn btn-default" href="{{ url_for('home') }}" style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+        <div>
+            {% if datosConfig['nombre'] != "Por defecto": %}    
+                <a type="button" class="btn btn-default" href="{{ url_for('configuracion_defecto') }}" style="border: 1px solid #138496; margin-right: 10px;">Restaurar configuacion por defecto</a>
+            {% endif %}
+        </div>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}

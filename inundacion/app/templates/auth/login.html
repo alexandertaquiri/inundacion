@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <!-- <h1>Iniciar sesión</h1>
+  <form action="{{ url_for('auth_authenticate') }}" method="POST">
+    <input name="email" placeholder="Correo" required/>
+    <input type="password" name="password" placeholder="Clave" required/>
+    <input type="submit" value="Login">
+  </form> -->
+
+  <!-- <div class="container">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleLogin.css')}}">
+    <section class="form-login">
+      <h5>Iniciar sesión</h5>
+    <form action="{{ url_for('auth_authenticate') }}" method="POST">
+       <input class="controls" type="email" name="email" placeholder="Correo" required/>
+       <input class="controls" type="password" name="contraseña" placeholder="Contraseña" required autocomplete="off"/>
+       <input class="buttons" type="submit" name="" value="Ingresar">
+       <input class="buttons" type="reset" name="" value="Limpiar">
+    </form>
+  
+    </section>
+  
+  </div> -->
+
+{% endblock %}

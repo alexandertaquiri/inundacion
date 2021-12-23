@@ -1,0 +1,287 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+crossorigin=""/>
+
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+crossorigin=""></script>  
+
+<!-- Plagin DRAW -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    } 
+    #coordenadas {
+        display: none;
+    } 
+    #map {
+        min-height: 400px;
+        min-width: 200px;
+    }  
+</style>
+
+
+
+
+{% endblock %}
+
+
+{% block content %}
+
+
+        
+    <div class="container espaciador-div-top">
+        <form action="{{ url_for('denuncia_modify') }}" method="POST">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="fas fa-pencil-alt" style="font-size: 20px; margin-right: 10px;"></i>Edición de Denuncia</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row form-group" style="margin-top: 60px;">
+                        <div class="col-12 col-md-7">
+                            <label for="map" class="is-required"><small>Establecer recorrido</small></label>
+                            <div class="col-12 col-md-12" id="map">
+            
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                
+                <label for="input-name" style="margin-top: 0px; margin-right: 100px">Información de la Denuncia:</label>
+                <div class="panel-body">
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label for="titulo" class="is-required"><small>Titulo</small></label>
+                            <input type="text" required class="form-control" id="titulo" name="titulo" placeholder="" value="{{ datos.titulo if datos }}">
+                        </div>
+                    </div>
+
+                    <div class="row form-group espaciador-div-input-top">    
+                        <div class="col-12 col-md-6">
+                            <label><small>Categoria Actual</small></label>
+                            <input type="text" class="form-control" value="{{ denuncia.categoria.nombre }}" readonly>
+                        </div>
+                        <label><small>Categorias</small></label>
+                        <div class="col-12 col-md-6">
+                            <label for="denuncia.categoria" class="is-required"><small>Categoria</small></label>
+                            <select name="categoria_id" class="selectpicker form-control">
+
+                                <option value="{{datos.categoria_id}}">Dejar categoria actual</option>
+                                {% for categoria in categorias.items %}
+  
+                                <option value="{{ categoria.id_categoria }}">{{ categoria.nombre }}</option>
+              
+                                {% endfor %}
+                           
+                          </select>
+                        </div>
+                        <br>
+                    </div> 
+
+   
+                    <div class="row form-group espaciador-div-input-top">    
+                        <div class="col-12 col-md-6">
+                            <label><small>Asignado_a : </small></label> <label>{{datos.asignado_a}}</label>
+
+                            
+                            
+                            
+                            <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+
+                                <option value="{{datos.asignado_a}}">Dejar usuario actual</option>
+                                {% for user in users %}
+                                    
+                                    <option value="{{user.username}}">{{user.username}}</option>
+                                {% endfor %}
+                        
+                            </select>
+                            
+                        </div>
+
+                        
+                        <div class="row form-group espaciador-div-input-top">
+                            <div class="col-12 col-md-6">
+                                <label for="direccion" class="is-required"><small>Descripcion</small></label>
+                                <input required type="text" class="form-control" id="descripcion" name="descripcion" placeholder="" value="{{ datos.descripcion if datos }}">
+                            </div>
+        
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label><small>Estado Actual : </small></label> <label>{{datos.estado}}</label>
+                                         
+                        </div>
+
+                    </div>          
+                    <br>
+                     
+                    <label for="input-name" style="margin-top: 0px; margin-right: 100px">Coordenadas:</label>    
+                    <div class="row form-group espaciador-div-input-top">        
+                               
+                        <div class="col-12 col-md-6">
+                            <label for="longitud" class="is-required"><small>Longitud</small></label>
+                            <input type="number" required class="form-control" id="longitud" name="longitud" placeholder="" value="{{ datos.longitud if datos }}">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="latitud" class="is-required"><small>Latitud</small></label>
+                            <input type="number" required class="form-control" id="latitud" name="latitud" placeholder="" value="{{ datos.latitud if datos }}">
+                        </div>                           
+                    </div>
+                    
+                    <div class="row form-group">
+                        <div class="col-12 col-md-6">
+                            
+                            <div class="alert alert-danger" role="alert">
+                                
+                            </div>
+                            
+                        </div>
+                    
+                        <div class="col-12 col-md-6">
+                            
+                            <div class="alert alert-danger" role="alert">
+                               
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    
+                    <br>
+          <label for="input-name" style="margin-top: 0px; margin-right: 100px">Información del denunciante:</label>
+
+          <div class="row form-group espaciador-div-input-top"></div>
+              <div class="col-12 col-md-4">
+                <label for="apellido_denunciante" class="is-required"><small>Apellido Denunciante</small></label>
+                <input required type="apellido_denunciante" class="form-control" id="apellido_denunciante" name="apellido_denunciante" placeholder=""
+                  value="{{ datos.apellido_denunciante if datos }}">
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="nombre_denunciante" class="is-required"><small>Nombre Denunciante</small></label>
+                <input required type="nombre_denunciante" class="form-control" id="nombre_denunciante" name="nombre_denunciante" placeholder=""
+                  value="{{ datos.nombre_denunciante if datos }}">
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="tel_cel_denunciante" class="is-required"><small>Telefono/Celular Denunciante</small></label>
+                <input required type="tel_cel_denunciante" class="form-control" id="tel_cel_denunciante" name="tel_cel_denunciante" placeholder=""
+                  value="{{ datos.tel_cel_denunciante if datos }}">
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="email_denunciante" class="is-required"><small>Email De Denunciante</small></label>
+                <input required type="email_denunciante" class="form-control" id="email_denunciante" name="email_denunciante" placeholder=""
+                  value="{{ datos.email_denunciante if datos }}">
+              </div>
+              
+          </div>
+
+                <input type="hidden" id="idModificar" name="idModificar" value="{{ datos.id if datos }}">
+    
+                <div class="panel-footer text-right" style="margin-top: 40px;">
+                    <a type="button" class="btn btn-default" href="{{ url_for('denuncia_list') }}" style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Modificar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+
+    <script>  
+        $( document ).ready(function() {
+            editarMapa();
+        });
+
+        function editarMapa(map) {
+            //costantes
+            const latitudInicial = -34.9187;
+            const longitudInicial = -57.956;
+
+            var map = L.map('map').setView([latitudInicial, longitudInicial], 13);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+
+            var drawnItems = new L.FeatureGroup();
+            map.addLayer(drawnItems);
+
+            var polyLayers = [];
+
+            cos = document.getElementById("coordenadas").getAttribute("value");
+
+            let puntos = [];
+            
+            var coordenadasRecorrido = cos.split(",");
+
+            for(i = 0; i < coordenadasRecorrido.length; i=i+2) {
+                let punto = [];
+                punto.push(coordenadasRecorrido[i]);
+                punto.push(coordenadasRecorrido[i+1]);
+                puntos.push(punto);
+            }
+
+            var polylines = L.polyline(puntos);
+            polyLayers.push(polylines);
+            
+            // Add the layers to the drawnItems feature group 
+            for (let layer of polyLayers) {
+                drawnItems.addLayer(layer);
+            }
+
+            var drawControl = new L.Control.Draw({
+                draw: false,
+                edit: {
+                    featureGroup: drawnItems,
+                    poly: {
+                        allowIntersection: false
+                    }, 
+                remove: false
+                }
+            });
+            map.addControl(drawControl);
+
+            map.on("draw:edited", function (e) {
+                let layers = e.layers;
+                layers.eachLayer(function (layer) {
+                    // console.log(layer);
+
+                    map.addLayer(layer);
+                    const coordinates = layer.getLatLngs().flat().map(coordinate => {
+                        return [ coordinate.lat,coordinate.lng ]
+                    });
+
+                    // let coords = JSON.stringify(coordinates);
+                    document.getElementById("coordenadas").setAttribute("value", coordinates);
+                });
+            });
+        }
+    </script>
+
+    
+
+{% endblock %}

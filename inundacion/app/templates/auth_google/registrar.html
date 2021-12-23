@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    #botonCheck:active {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:hover {
+        background: #5cb85c;
+        color: white;
+    }
+    #botonCheck:active ::after {
+        background: #5cb85c;
+        color: white;
+    }
+    .btn-default.active {
+        background-color: #5cb85c;
+        color: white;
+    }
+    
+    body {
+          background: {{ datosConfig['coloresPublicos'][0] }};
+      }
+
+      #navColorHeader {
+          background: {{ datosConfig['coloresPublicos'][1] }};
+      }
+
+      #navColorFooter {
+          background: {{ datosConfig['coloresPublicos'][2] }};
+      }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="container espaciador-div-top">
+      <form action="{{ url_for('user_create_google') }}" method="POST">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="fas fa-user-plus"
+                style="font-size: 20px; margin-right: 10px;"></i>Usuario con cuenta Google: {{ users_email }}</h4>
+          </div>
+    
+          <div class="panel-body">
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="first_name" class="is-required"><small>Nombre</small></label>
+                <input type="text" required class="form-control" id="first_name" name="first_name" placeholder=""
+                  value="{{ first_name }}">
+              </div>
+    
+              <div class="col-12 col-md-6">
+                <label for="last_name" class="is-required"><small>Apellido</small></label>
+                <input type="text" required class="form-control" id="last_name" name="last_name" placeholder=""
+                  value="{{ last_name }}">
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_nombreCompleto"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_nombreCompleto"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-4">
+                <label for="username" class="is-required"><small>Nombre de usuario</small></label>
+                <input required type="text" class="form-control" id="username" name="username" placeholder="" value="{{ username.strip() }}">
+              </div>
+    
+              <div class="col-12 col-md-4">
+                <input type="hidden" class="form-control" id="email" name="email" placeholder="" value="{{ users_email }}">
+              </div>
+    
+              <div class="col-12 col-md-4">
+                <input type="hidden" name="estado" id="estado" value="0">
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-4">
+                {% if errores is defined and errores["error_username"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_username"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+    
+            <div class="row form-group espaciador-div-input-top">
+              <div class="col-12 col-md-6">
+                <label for="password" class="is-required"><small>Contraseña</small></label>
+                <input mdInput required type="password" class="form-control" id="password" name="password" placeholder=""
+                  [formControl]="formGroup.controls['password']" autocomplete="new-password" #password>
+              </div>
+    
+              <div class="col-12 col-md-6">
+                <label for="confirmacionPassword" class="is-required"><small>Confirmación de contraseña</small></label>
+                <input required type="password" class="form-control" id="confirmacionPassword" name="confirmacionPassword"
+                  placeholder="">
+              </div>
+            </div>
+    
+            <div class="row form-group">
+              <div class="col-12 col-md-12">
+                {% if errores is defined and errores["error_password"] is defined %}
+                <div class="alert alert-danger" role="alert">
+                  {{ errores["error_password"] }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+        
+           
+          </div>
+          <div class="panel-footer text-right">
+            <a type="button" class="btn btn-danger" href="{{ url_for('home') }}"
+              style="border: 1px solid #138496; margin-right: 10px;">Salir</a>
+            <button type="submit" class="btn btn-primary">Finalizar registro</button>
+          </div>
+      </form>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}

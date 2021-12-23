@@ -1,0 +1,261 @@
+{% extends "layout.html" %}
+{% block head %}
+
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    
+     
+    <style>
+        #tabla {
+            background: white;
+            width: 100%;
+            padding: 20px 20px;
+            border-radius: 5px;
+            z-index: -1;
+        }
+        .elemento {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: black;
+        }
+        .titulo {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin: 0px 0px;
+            padding: 0px 0px;
+        }
+        .dropdown-scrollbar {
+            height: 100px;
+            overflow: scroll;
+        }
+
+        body {
+            background: {{ datosConfig['coloresPrivados'][0] }};
+        }
+
+        #navColorHeader {
+            background: {{ datosConfig['coloresPrivados'][1] }};
+        }
+
+        #navColorFooter {
+            background: {{ datosConfig['coloresPrivados'][2] }};
+        }
+        
+    </style>
+
+
+    <div class="container">
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <div class="jumbotron" style="background: none; padding: 0px; margin-top: 95px;">
+                    <h2 style="color: white;">USUARIOS</h2>
+                </div>
+            </div>
+        </div>
+
+
+        {% if usr.tiene_permiso("user_new") %}
+        <div class="row form-group">
+            <div class="col-12 col-md-12">
+                <a type="button" href="{{ url_for('user_new') }}" class="btn btn-success btn-lg" style="margin-bottom: 40px; border: 1px solid #ccc;"><i style="margin-right: 10px;" class="fas fa-user-plus"></i>Agregar</a>
+            </div>
+        </div> 
+        {% endif %}
+    </div>
+
+
+    <div class="container" id="tabla">
+        <div class="row form-group" style="margin-bottom: 40px; margin-top: 20px;">
+            <form action="{{ url_for('user_byNombre') }}">
+                <div class="col-12 col-md-4">
+                    <input type="text" id="byNombre" name="byNombre" class="form-control" placeholder="Filtrar por nombre de usuario...">
+                </div>
+    
+                <div class="col-12 col-md-1">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+            
+            <div class="col-12 col-md-2">
+                
+            </div>
+      
+            <form action="{{ url_for('user_estado') }}" method="POST">
+                <div class="col-12 col-md-4">
+                    <select class="form-control custom-select custom-select-lg mb-3" id="select" name="select">
+                        <option selected>Todos</option>
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+                
+                <div class="col-12 col-md-1">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div> 
+        
+
+        <div class="col-12 col-md-12">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Usuario</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Nombres</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Apellido</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Email</strong>
+                            </a>
+                        </th>
+						<th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Estado</strong>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="" class="btn btn-outline-primary disabled titulo" role="button">
+                                <strong>Acciones</strong>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users.items %}
+                    <tr>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ user.username }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ user.first_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ user.last_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {{ user.email }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-primary disabled elemento" role="button">
+                                {% if user.activo == 1 %}
+								    Activo
+								{% else %}
+								    Inactivo
+								{% endif %}
+                            </a>
+                        </td>
+                        <td>
+                            {% if usr.tiene_permiso("user_update") %}
+                            <a class="btn btn-warning" onclick="editar('{{ user.id }}');"><i class="far fa-edit"></i></a>
+                            {% endif %}
+
+                            {% if usr.tiene_permiso("user_destroy") %}
+                            <a class="btn btn-danger" onclick="borrar('{{ user.id }}');" data-toggle="modal" data-target="#exampleModal"><i class="far fa-trash-alt"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-bottom: 20px;">
+                {% for page_num in users.iter_pages(left_edge=1, right_edge=1,
+                left_current=1, right_current=1) %} {% if page_num %} {% if users.page ==
+                page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('user_list', page=page_num) }}">{{ page_num }}</a>
+                {% if page_num != users.pages %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('user_list', page=page_num+1) }}">{{ page_num+1 }}</a>
+                {% endif %}
+                {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('user_list', page=page_num) }}">{{ page_num }}</a>
+                {% endif %} {% else %} ... {% endif %} {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Envío de id para la modificación -->
+    <form id="envioModificar" action="{{ url_for('user_modificar') }}">
+        <input id="id" name="id" type="hidden" value="">
+    </form>
+
+
+    <!-- Modal para eliminación -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form action="{{ url_for('user_delete') }}" method="POST">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel" style="color: #416475; font-weight: bold;">Mensaje de
+                            confirmación
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="modal-body" id="cuerpoModal">
+    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" style="border: 1px solid #416475;" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                        <input id="idBorrar" name="idBorrar" type="hidden" value="">
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+   
+
+    <script>
+        function editar(id) {
+            $("#id").val(id);
+            $("#envioModificar").submit();
+        }
+
+        function borrar(id) {
+            $("#idBorrar").val(id);
+            $('#cuerpoModal').empty();
+            $('#cuerpoModal').append("¿Desea eliminar el usuario seleccionado?");
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#envioModificar").hide();
+        });
+    </script>
+
+    
+
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block head %}
+
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }    
+
+    .map-container {
+        margin-bottom: 10px;
+        margin-top: 10px;   
+    }
+
+    #map {
+        height: 400px;
+        width: 600px;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+    <br><br><br>
+    <div class="container espaciador-div-top">   
+        <form action="{{ url_for('zona_create') }}" method="post" enctype="multipart/form-data">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="glyphicon glyphicon-folder-open"
+                        style="font-size: 20px; margin-right: 10px;"></i>{{ title }}</h4>
+                </div>
+
+
+
+                <div class="panel-body">
+
+
+                    <div class="jumbotron">
+                        <div class="container">
+                            <input type="file" name="fileupload" id="fileToUpload" style="margin-bottom: 10px;" accept=".csv">
+                            <input type="submit" class="btn btn-primary" value="Cargar archivo" name="submit"> 
+
+                            <br>
+
+                            <div class="row form-group">
+                                <div class="col-12 col-md-12">
+                                    <br>
+                                    {% if errores is defined and errores["error_nombreCompleto"] is defined %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ errores["error_nombreCompleto"] }}
+                                    </div>
+                                    {% endif %}
+
+                                    {% if errores is defined and errores["sin_errores"] is defined %}
+                                    <br>
+                                    <div class="alert alert-success" role="alert">
+                                        {{ errores["sin_errores"] }}
+                                    </div>
+                                    {% endif %}
+        
+                                    <br>
+                                    {% if errores is defined and errores["sin_errores_update"] is defined %}
+                                    <div class="alert alert-success" role="alert">
+                                        {{ errores["sin_errores_update"] }}
+                                    </div>
+                                    {% endif %}
+
+                                    <br>
+                                    {% if errores is defined and errores["error_extension_archivo"] is defined %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ errores["error_extension_archivo"] }}
+                                    </div>
+                                    {% endif %}
+
+                                    <br>
+                                    {% if errores is defined and errores["error_tipo_archivo"] is defined %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ errores["error_tipo_archivo"] }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            </div>
+
+                    </div>
+
+                    <a href="https://drive.google.com/file/d/1mCbwLCRQ__O-Ul9HLPX0rRWCvYtL8TaD/view?usp=sharing" target="_blank"><i class="glyphicon glyphicon-download-alt" style="font-size: 20px; margin-right: 10px;"></i></a><small><b>Clic para descargar modelo de archivo ejemplo</b></small>
+                   
+                    <br> <br> <br>
+
+                    <a type="button" class="btn btn-info" href="{{ url_for('zona_index') }}"
+                    style="border: 1px solid #138496; margin-right: 10px;">Ir a listado</a>  
+                
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+
+{% endblock %}

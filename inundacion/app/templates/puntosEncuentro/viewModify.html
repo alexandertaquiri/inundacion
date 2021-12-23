@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+
+{% block head %}
+{{ super() }}
+
+<style>
+    .is-required:after {
+        content: '*';
+        margin-left: 3px;
+        color: red;
+        font-weight: bold;
+    }
+    body {
+        background: {{ datosConfig['coloresPrivados'][0] }};
+    }
+
+    #navColorHeader {
+        background: {{ datosConfig['coloresPrivados'][1] }};
+    }
+
+    #navColorFooter {
+        background: {{ datosConfig['coloresPrivados'][2] }};
+    }    
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+        
+    <div class="container espaciador-div-top">
+        <form action="{{ url_for('puntosEncuentro_modify') }}" method="POST">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="modal-title" style="font-weight: bold; margin-left: 3px;"><i class="fas fa-pencil-alt" style="font-size: 20px; margin-right: 10px;"></i>Edición punto de encuentro</h4>
+                </div>
+    
+                <div class="panel-body">
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label for="nombre" class="is-required"><small>Nombre</small></label>
+                            <input type="text" required class="form-control" id="nombre" name="nombre" placeholder="" value="{{ datos.nombre if datos }}">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="email" class="is-required"><small>Email</small></label>
+                            <input required type="email" class="form-control" id="email" name="email" placeholder="" value="{{ datos.email if datos }}">
+                        </div>                      
+                    </div>
+                    
+                    <div class="row form-group">
+                        <div class="col-12 col-md-6">
+                            {% if errores is defined and errores["error_nombre"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_nombre"] }} 
+                            </div>
+                            {% endif %}
+                        </div>
+                    
+                        <div class="col-12 col-md-6">
+                            {% if errores is defined and errores["error_email"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_email"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label for="direccion" class="is-required"><small>Dirección</small></label>
+                            <input required type="text" class="form-control" id="direccion" name="direccion" placeholder="" value="{{ datos.direccion if datos }}">
+                        </div>
+    
+                        <div class="col-12 col-md-6">
+                            <label for="telefono" class="is-required"><small>Teléfono</small></label>
+                            <input required type="number" class="form-control" id="telefono" name="telefono" placeholder="" value="{{ datos.telefono if datos }}">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-12 col-md-6">
+                            {% if errores is defined and errores["error_direccion"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_direccion"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    
+                        <div class="col-12 col-md-6">
+                            {% if errores is defined and errores["error_telefono"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_telefono"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+    
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label for="latitud" class="is-required"><small>Latitud</small></label>
+                            <input required type="number" step="any" class="form-control" id="latitud" name="latitud" placeholder="" value="{{ datos.latitud if datos }}">
+                        </div>
+    
+                        <div class="col-12 col-md-6">
+                            <label for="longitud" class="is-required"><small>Longitud</small></label>
+                            <input required type="number" step="any" class="form-control" id="longitud" name="longitud" placeholder="" value="{{ datos.longitud if datos }}">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-12 col-md-12">
+                            {% if errores is defined and errores["error_coordenada"] is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ errores["error_coordenada"] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row form-group espaciador-div-input-top">
+                        <div class="col-12 col-md-6">
+                            <label><small>Estado Actual</small></label>
+                            <input type="text" class="form-control" value="{{ datos.estado if datos }}" readonly>
+                        </div>
+    
+                        <div class="col-12 col-md-6">
+                            <label for="estado" class="is-required"><small>Estado nuevo</small></label>
+                            <select required class="form-control" id="estado" name="estado">
+                                <option value="Publicado">Publicado</option>
+                                <option value="Despublicado">Despublicado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="idModificar" name="idModificar" value="{{ datos.id if datos }}">
+    
+                <div class="panel-footer text-right" style="margin-top: 40px;">
+                    <a type="button" class="btn btn-default" href="{{ url_for('puntosEncuentro_list') }}" style="border: 1px solid #138496; margin-right: 10px;">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Modificar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+
+    
+
+{% endblock %}
